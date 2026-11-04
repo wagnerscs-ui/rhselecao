@@ -72,7 +72,7 @@
   async function iniciar() {
     const b = $("#comecar");
     if (b) { b.disabled = true; b.textContent = "Abrindo…"; }
-    const r = await api("/api/iniciar", { method: "POST", body: JSON.stringify({ c: codigo }) });
+    const r = await api("/api/iniciar", { method: "POST", body: JSON.stringify({ c: codigo, origem: location.origin }) });
     if (r.status === 409) return telaEnviado(false);
     if (!r.ok) {
       if (r.status === 404) return telaInvalido();
@@ -171,18 +171,24 @@
   function montarFoto(d) {
     const area = $("#foto-area");
     if (!area) return;
+    const linkCurto = String(d.linkFoto || "").replace(/^https?:\/\//, "");
     area.innerHTML = `<div class="foto-caixa">
       <div class="qr" aria-hidden="true">${d.qrFoto}</div>
       <div>
-        <p style="margin:0 0 6px"><strong>Pelo celular:</strong> aponte a câmera para o QR code e envie a foto por lá.</p>
-        <p class="muted" style="margin:0 0 10px">Ou envie um arquivo daqui: <label class="botao sec" style="padding:8px 12px;margin-left:4px">Escolher foto<input id="foto-arquivo" type="file" accept="image/*" capture="environment" hidden></label></p>
+        <p style="margin:0 0 6px"><strong>Pelo celular:</strong> abra a câmera, aponte para o QR code e toque no link que aparecer.</p>
+        <p class="muted" style="margin:0 0 6px">Se o celular não ler o código, digite este endereço no navegador dele:</p>
+        <p class="link-foto"><code>${esc(linkCurto)}</code> <button class="botao sec" id="copiar-link-foto" type="button" style="padding:6px 10px">Copiar</button></p>
+        <p class="muted" style="margin:10px 0">Ou envie um arquivo daqui: <label class="botao sec" style="padding:8px 12px;margin-left:4px">Escolher foto<input id="foto-arquivo" type="file" accept="image/*" capture="environment" hidden></label></p>
         <div id="foto-status" class="foto-status">${est.fotoOk ? "Foto recebida." : "Aguardando a foto do desenho."}</div>
         <img id="foto-previa" class="previa" alt="" hidden>
       </div>
     </div>`;
     if (est.fotoOk) $("#foto-status").classList.add("recebida");
     const svg = $(".qr svg", area);
-    if (svg) { svg.setAttribute("width", "150"); svg.setAttribute("height", "150"); }
+    if (svg) { svg.setAttribute("width", "220"); svg.setAttribute("height", "220"); }
+    $("#copiar-link-foto").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(d.linkFoto); toast("Endereço copiado."); } catch (_) { toast("Copie o endereço manualmente."); }
+    });
 
     $("#foto-arquivo").addEventListener("change", async (e) => {
       const arq = e.target.files && e.target.files[0];

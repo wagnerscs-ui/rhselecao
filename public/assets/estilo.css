@@ -46,8 +46,10 @@ th { background: #eaf2f4; color: var(--ardosia); }
 .lista { padding-left: 20px; margin: 8px 0; }
 .lista li { margin-bottom: 6px; }
 .foto-caixa { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; border: 1px dashed #a9bfc4; border-radius: 10px; padding: 14px; background: #fafcfd; }
-.foto-caixa .qr { background: #fff; padding: 6px; border: 1px solid var(--linha); border-radius: 6px; }
-.foto-caixa .qr img, .foto-caixa .qr canvas { display: block; }
+.foto-caixa .qr { background: #fff; padding: 0; border: 1px solid var(--linha); border-radius: 6px; line-height: 0; }
+.foto-caixa .qr svg { display: block; width: 220px; height: 220px; }
+.link-foto { margin: 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.link-foto code { background: #eef5f6; padding: 6px 8px; border-radius: 6px; font-size: 15px; word-break: break-all; }
 .foto-status { font-weight: 700; }
 .foto-status.recebida { color: var(--esmeralda); }
 .previa { max-width: 220px; border-radius: 6px; border: 1px solid var(--linha); margin-top: 8px; }

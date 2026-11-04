@@ -7,8 +7,9 @@ import QRCode from "qrcode";
 export default async (req) => {
   const url = new URL(req.url);
   let c = url.searchParams.get("c");
+  let body = {};
   if (req.method === "POST") {
-    const body = await req.json().catch(() => ({}));
+    body = await req.json().catch(() => ({}));
     c = body.c;
   }
   c = String(c || "").toUpperCase();
@@ -38,8 +39,15 @@ export default async (req) => {
   await store().setJSON(`cand/${c}`, cand);
 
   const rascunho = await lerRascunho(c);
-  const linkFoto = `${url.origin}/f/${c}`;
-  const qrFoto = await QRCode.toString(linkFoto, { type: "svg", margin: 1, width: 160 });
+  // O endereço da foto usa o mesmo domínio que o candidato abriu no navegador.
+  const origemValida = typeof body.origem === "string" && /^https?:\/\/[a-z0-9.-]+(:\d+)?$/i.test(body.origem);
+  const linkFoto = `${origemValida ? body.origem : url.origin}/f/${c}`;
+  const qrFoto = await QRCode.toString(linkFoto, {
+    type: "svg",
+    margin: 4,
+    errorCorrectionLevel: "M",
+    color: { dark: "#000000", light: "#ffffff" },
+  });
   return json({
     linkFoto,
     qrFoto,
