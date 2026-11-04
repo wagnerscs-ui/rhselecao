@@ -92,8 +92,8 @@
 
     tela(`<div class="cartao"><h1>${esc(d.titulo)}</h1><p class="sub">${esc(d.nome)}</p>${d.perguntas}</div>`);
     document.body.insertAdjacentHTML("beforeend", `<div class="rodape-fixo" id="rodape"><div class="dentro">
-      <span class="salvo" id="salvo">As respostas são salvas automaticamente.</span>
       <button class="botao" id="enviar" type="button">Enviar respostas</button>
+      <span class="salvo" id="salvo">As respostas são salvas automaticamente.</span>
     </div></div>`);
 
     if (d.rascunho) for (const ta of $$("textarea[data-campo]")) ta.value = d.rascunho[ta.dataset.campo] || "";
