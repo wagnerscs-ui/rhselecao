@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Foto do desenho · Complementare</title>
+<link rel="stylesheet" href="/assets/estilo.css">
+</head>
+<body>
+<header class="topo"><div class="dentro"><span class="marca">Complementare Projetos de Instalações</span></div></header>
+<main id="app"><div class="cartao centro muted">Carregando…</div></main>
+<script src="/assets/imagem.js"></script>
+<script>
+(() => {
+  const app = document.getElementById("app");
+  const m = location.pathname.match(/\/f\/([A-Za-z0-9]{8})/);
+  const codigo = ((m && m[1]) || new URLSearchParams(location.search).get("c") || "").toUpperCase();
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  const tela = (h) => { app.innerHTML = h; };
+
+  async function abrir() {
+    if (!/^[A-Z0-9]{8}$/.test(codigo)) return tela(`<div class="cartao centro"><h1>Link inválido</h1></div>`);
+    let d = {};
+    try { const r = await fetch(`/api/foto?c=${codigo}`); d = await r.json(); if (!r.ok) throw new Error(d.erro); }
+    catch (e) { return tela(`<div class="cartao centro"><h1>Link inválido</h1><p class="muted">${esc(e.message || "")}</p></div>`); }
+    if (d.status === "enviado") return tela(`<div class="cartao centro"><h1>Teste já enviado</h1><p class="muted">Este link não recebe mais fotos.</p></div>`);
+    if (d.status !== "iniciado") return tela(`<div class="cartao centro"><h1>Comece o teste primeiro</h1><p class="muted">Abra o teste no computador e clique em "Começar o teste". Depois leia o QR code de novo.</p></div>`);
+    tela(`<div class="cartao">
+      <h1>Foto do desenho A1</h1>
+      <p class="sub">${esc(d.nome)}</p>
+      <p>Coloque a folha numa superfície plana, com boa luz, e enquadre o desenho inteiro.</p>
+      <p><label class="botao" style="width:100%">Tirar ou escolher foto<input id="arq" type="file" accept="image/*" capture="environment" hidden></label></p>
+      <div id="st" class="${d.recebida ? "ok" : "muted"}">${d.recebida ? "Uma foto já foi recebida. Se enviar outra, ela substitui a anterior." : "Nenhuma foto enviada ainda."}</div>
+      <img id="prev" class="previa" alt="" hidden style="max-width:100%">
+    </div>`);
+    document.getElementById("arq").addEventListener("change", async (e) => {
+      const arq = e.target.files && e.target.files[0];
+      if (!arq) return;
+      const st = document.getElementById("st");
+      st.className = "muted"; st.textContent = "Enviando…";
+      try {
+        const r = await enviarFoto(codigo, arq);
+        if (r.ok) {
+          st.className = "ok"; st.textContent = "Foto recebida. Pode voltar ao computador e continuar o teste.";
+          const img = document.getElementById("prev"); img.src = URL.createObjectURL(r.blob); img.hidden = false;
+        } else {
+          st.className = "aviso"; st.textContent = r.dados.erro || "Não foi possível enviar. Tente de novo.";
+        }
+      } catch (_) { st.className = "aviso"; st.textContent = "Sem conexão. Tente de novo."; }
+      e.target.value = "";
+    });
+  }
+  abrir();
+})();
+</script>
+</body>
+</html>

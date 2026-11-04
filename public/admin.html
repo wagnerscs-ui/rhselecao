@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel do RH · Teste técnico</title>
+<link rel="stylesheet" href="/assets/estilo.css">
+<style>
+  main { max-width: 1040px; padding-bottom: 40px; }
+  .grade { display: grid; grid-template-columns: 1fr 1fr 1.2fr auto; gap: 10px; align-items: end; }
+  .grade label { font-size: 13px; color: var(--suave); display: block; margin-bottom: 4px; }
+  .link-novo { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+  .link-novo code { background: #eef5f6; padding: 8px 10px; border-radius: 6px; word-break: break-all; flex: 1 1 300px; }
+  .selo { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #e7eef0; color: var(--ardosia); white-space: nowrap; }
+  .selo.enviado { background: #dff3ec; color: #046b57; }
+  .selo.iniciado { background: #fdf0df; color: #8a4b0f; }
+  .selo.alerta { background: #fbe4e2; color: var(--erro); }
+  #tabela td, #tabela th { font-size: 14px; }
+  .linha-acao { cursor: pointer; }
+  .linha-acao:hover td { background: #f6fafb; }
+  .det-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .resposta { white-space: pre-wrap; background: #f8fbfc; border: 1px solid var(--linha); border-radius: 8px; padding: 10px; min-height: 40px; }
+  .foto-grande { max-width: 100%; border: 1px solid var(--linha); border-radius: 8px; }
+  .gabarito { background: #fbfdfd; border: 1px solid var(--linha); border-radius: 8px; padding: 4px 14px 14px; font-size: 14px; }
+  .gabarito .figura svg { width: 100%; }
+  .gabarito .criterio td:first-child { font-weight: 700; white-space: nowrap; }
+  .gabarito .nota { color: var(--suave); font-size: 13px; }
+  .aval { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .aval label { font-size: 13px; color: var(--suave); display: block; margin-bottom: 4px; }
+  .acoes-linha { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  @media (max-width: 800px) { .grade, .det-grade, .aval { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="topo"><div class="dentro">
+  <span class="marca">Complementare · Painel do RH</span>
+  <button class="botao sec" id="sair" type="button" hidden style="padding:6px 12px">Sair</button>
+</div></header>
+<main id="app"><div class="cartao centro muted">Carregando…</div></main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<dialog id="dlg"><div class="dentro">
+  <h3 id="dlg-titulo"></h3>
+  <div id="dlg-texto"></div>
+  <div class="acoes">
+    <button class="botao sec" id="dlg-nao" type="button">Cancelar</button>
+    <button class="botao" id="dlg-sim" type="button">Confirmar</button>
+  </div>
+</div></dialog>
+<script src="/assets/admin.js"></script>
+</body>
+</html>

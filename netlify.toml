@@ -1,0 +1,32 @@
+[build]
+  publish = "public"
+  command = "echo 'sem build'"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Link do candidato: /t/CODIGO abre a página do teste
+[[redirects]]
+  from = "/t/*"
+  to = "/teste.html"
+  status = 200
+
+# Link da foto pelo celular: /f/CODIGO
+[[redirects]]
+  from = "/f/*"
+  to = "/foto.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
